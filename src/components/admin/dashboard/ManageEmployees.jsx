@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Upload, Trash2, Download } from "lucide-react"
+import { Search, Upload, Trash2, Download, FileCheck } from "lucide-react"
 import { deleteEmployee } from "../../../Api/Service/apiService"
 import CONFIG from "../../../Api/Config/config"
 
@@ -326,6 +326,7 @@ export default function ManageEmployees() {
     { key: "experience", label: "Experience" },
     { key: "cv", label: "CV" },
     { key: "masked_cv", label: "Masked CV" },
+    { key: "agreement_pdf_url", label: "Agreement" },
   ]
 
   return (
@@ -483,6 +484,24 @@ export default function ManageEmployees() {
                               </button>
                             </div>
                           )}
+                          {row.agreement_pdf_url && (
+                            <div className="flex gap-2">
+                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Agreement:</span>
+                              <button
+                                onClick={() => window.open(row.agreement_pdf_url, '_blank')}
+                                className="text-xs text-green-600 hover:text-green-800 underline font-semibold flex items-center gap-1.5"
+                              >
+                                <FileCheck size={12} />
+                                View PDF
+                              </button>
+                            </div>
+                          )}
+                          {row.agreement_accepted && (
+                            <div className="flex gap-2">
+                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Accepted:</span>
+                              <span className="text-xs text-green-600 font-semibold">✓ {new Date(row.agreement_timestamp).toLocaleString()}</span>
+                            </div>
+                          )}
                         </div>
                       </details>
 
@@ -556,6 +575,20 @@ export default function ManageEmployees() {
                                   />
                                   View
                                 </button>
+                              ) : (
+                                <span className="text-slate-400">-</span>
+                              )
+                            ) : col.key === "agreement_pdf_url" ? (
+                              row[col.key] ? (
+                                <button
+                                  onClick={() => window.open(row[col.key], '_blank')}
+                                  className="text-green-600 hover:text-green-800 underline font-semibold flex items-center gap-2"
+                                >
+                                  <FileCheck size={16} />
+                                  View
+                                </button>
+                              ) : row.agreement_accepted ? (
+                                <span className="text-amber-600 text-xs">Pending</span>
                               ) : (
                                 <span className="text-slate-400">-</span>
                               )
