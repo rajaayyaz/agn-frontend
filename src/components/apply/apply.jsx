@@ -242,69 +242,113 @@ export default function ApplyPage() {
                 <p className="text-sm font-semibold text-blue-900">
                   📋 This agreement will be digitally signed and stored securely. You will be legally bound by its terms upon acceptance.
                 </p>
+                <p className="text-sm font-semibold text-blue-900 mt-2" dir="rtl">
+                  📋 یہ معاہدہ ڈیجیٹل طور پر دستخط شدہ اور محفوظ طریقے سے محفوظ کیا جائے گا۔ قبولیت کے بعد آپ اس کی شرائط سے قانونی طور پر پابند ہوں گے۔
+                </p>
               </div>
               
               <div className="prose prose-sm max-w-none">
                 <h3 className="text-lg font-bold text-black mb-3">JOB PLACEMENT SERVICE AGREEMENT</h3>
+                <h3 className="text-lg font-bold text-black mb-3" dir="rtl">ملازمت کی جگہ کی خدمات کا معاہدہ</h3>
                 
-                <p className="text-gray-700 mb-4 leading-relaxed">
+                <p className="text-gray-700 mb-2 leading-relaxed">
                   This Service Agreement ("Agreement") is entered into on <strong>{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong> between:
+                </p>
+                <p className="text-gray-700 mb-4 leading-relaxed" dir="rtl">
+                  یہ سروس معاہدہ ("معاہدہ") <strong>{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong> کو درج ذیل کے درمیان طے پایا:
                 </p>
                 
                 <div className="bg-gray-50 p-4 rounded-lg mb-4">
                   <p className="font-semibold text-black mb-2">APPLICANT:</p>
+                  <p className="font-semibold text-black mb-2" dir="rtl">درخواست دہندہ:</p>
                   <p className="text-gray-700"><strong>Name:</strong> {formData.name || "[Your Name]"}</p>
+                  <p className="text-gray-700" dir="rtl"><strong>نام:</strong> {formData.name || "[آپ کا نام]"}</p>
                   <p className="text-gray-700"><strong>Email:</strong> {formData.email || "[Your Email]"}</p>
+                  <p className="text-gray-700" dir="rtl"><strong>ای میل:</strong> {formData.email || "[آپ کی ای میل]"}</p>
                   <p className="text-gray-700"><strong>CNIC:</strong> {formData.cnic_no || "[Your CNIC]"}</p>
+                  <p className="text-gray-700" dir="rtl"><strong>شناختی کارڈ:</strong> {formData.cnic_no || "[آپ کا شناختی کارڈ]"}</p>
                   <p className="text-gray-700"><strong>Position Applied:</strong> {formData.applying_for || "[Position]"}</p>
+                  <p className="text-gray-700" dir="rtl"><strong>درخواست شدہ عہدہ:</strong> {formData.applying_for || "[عہدہ]"}</p>
                 </div>
                 
-                <p className="text-gray-700 mb-4">and</p>
+                <p className="text-gray-700 mb-2">and</p>
+                <p className="text-gray-700 mb-4" dir="rtl">اور</p>
                 
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
                   <p className="font-semibold text-black mb-2">SERVICE PROVIDER:</p>
+                  <p className="font-semibold text-black mb-2" dir="rtl">خدمات فراہم کنندہ:</p>
                   <p className="text-gray-700">AGN Job Bank</p>
                   <p className="text-gray-700">Email: agnjobbank123@gmail.com</p>
                 </div>
 
                 <h4 className="text-base font-bold text-black mt-6 mb-3">1. SERVICE TERMS</h4>
-                <p className="text-gray-700 mb-4 leading-relaxed">
+                <h4 className="text-base font-bold text-black mb-3" dir="rtl">۱۔ خدمات کی شرائط</h4>
+                <p className="text-gray-700 mb-2 leading-relaxed">
                   I, <strong>{formData.name || "[Applicant Name]"}</strong>, hereby acknowledge and agree that:
+                </p>
+                <p className="text-gray-700 mb-4 leading-relaxed" dir="rtl">
+                  میں، <strong>{formData.name || "[درخواست دہندہ کا نام]"}</strong>، اس بات کو تسلیم کرتا/کرتی ہوں اور اس سے اتفاق کرتا/کرتی ہوں کہ:
                 </p>
                 
                 <ol className="list-decimal pl-6 space-y-3 mb-6 text-gray-700">
                   <li>AGN Job Bank will provide job placement services to assist me in securing employment.</li>
+                  <li dir="rtl">AGN جاب بینک مجھے ملازمت حاصل کرنے میں مدد کے لیے جاب پلیسمنٹ کی خدمات فراہم کرے گا۔</li>
                   <li>Upon successful job placement and official appointment by an employer arranged through AGN Job Bank, I agree to pay a <strong className="text-red-600">one-time service fee of 50% (fifty percent) of my first complete monthly salary</strong>, including all bonuses and allowances.</li>
+                  <li dir="rtl">کامیاب جاب پلیسمنٹ اور AGN جاب بینک کے ذریعے منظم کردہ آجر کی طرف سے سرکاری تقرری پر، میں <strong className="text-red-600">اپنی پہلی مکمل ماہانہ تنخواہ کا 50% (پچاس فیصد) ایک بار کی سروس فیس</strong> ادا کرنے پر راضی ہوں، جس میں تمام بونس اور الاؤنسز شامل ہیں۔</li>
                   <li>This payment shall be made within <strong>30 days of receiving my first salary</strong> from the employer.</li>
+                  <li dir="rtl">یہ ادائیگی آجر سے <strong>میری پہلی تنخواہ وصول کرنے کے 30 دنوں کے اندر</strong> کی جائے گی۔</li>
                   <li>If I voluntarily leave the job within the first month, the service fee remains payable on a pro-rata basis as per the days worked.</li>
+                  <li dir="rtl">اگر میں پہلے مہینے کے اندر رضاکارانہ طور پر نوکری چھوڑ دیتا/دیتی ہوں، تو سروس فیس کام کیے گئے دنوں کے مطابق تناسب کی بنیاد پر قابل ادائیگی رہے گی۔</li>
                 </ol>
 
                 <h4 className="text-base font-bold text-black mt-6 mb-3">2. PAYMENT OBLIGATION</h4>
-                <p className="text-gray-700 mb-4 leading-relaxed">
+                <h4 className="text-base font-bold text-black mb-3" dir="rtl">۲۔ ادائیگی کی ذمہ داری</h4>
+                <p className="text-gray-700 mb-2 leading-relaxed">
                   The service fee is calculated as: <strong>First Complete Monthly Salary × 50% = Service Fee</strong>
+                </p>
+                <p className="text-gray-700 mb-4 leading-relaxed" dir="rtl">
+                  سروس فیس کا حساب اس طرح کیا جاتا ہے: <strong>پہلی مکمل ماہانہ تنخواہ × 50% = سروس فیس</strong>
                 </p>
                 
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-                  <p className="text-sm text-yellow-900">
+                  <p className="text-sm text-yellow-900 mb-1">
                     <strong>Example:</strong> If your first month salary is £2,000, you will pay £1,000 to AGN Job Bank as a one-time service fee.
+                  </p>
+                  <p className="text-sm text-yellow-900" dir="rtl">
+                    <strong>مثال:</strong> اگر آپ کی پہلے مہینے کی تنخواہ £2,000 ہے، تو آپ AGN جاب بینک کو £1,000 ایک بار کی سروس فیس کے طور پر ادا کریں گے۔
                   </p>
                 </div>
 
                 <h4 className="text-base font-bold text-black mt-6 mb-3">3. LEGAL ACKNOWLEDGMENT</h4>
-                <p className="text-gray-700 mb-4 leading-relaxed">
+                
+                <h4 className="text-base font-bold text-black mb-3" dir="rtl">۳۔ قانونی تسلیم</h4>
+                <p className="text-gray-700 mb-2 leading-relaxed">
                   By clicking "Accept & Submit" below, I certify that:
                 </p>
-                <ul className="list-disc pl-6 space-y-2 mb-6 text-gray-700">
+                <p className="text-gray-700 mb-4 leading-relaxed" dir="rtl">
+                  نیچے "قبول کریں اور جمع کروائیں" پر کلک کرکے، میں تصدیق کرتا/کرتی ہوں کہ:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 mb-3 text-gray-700">
                   <li>I have read and understood all terms of this agreement</li>
                   <li>I agree to be legally bound by these terms</li>
                   <li>All information provided in my application is true and accurate</li>
                   <li>I will fulfill my payment obligation as stated above</li>
                 </ul>
+                <ul className="list-disc pr-6 space-y-2 mb-6 text-gray-700" dir="rtl">
+                  <li>میں نے اس معاہدے کی تمام شرائط پڑھی اور سمجھی ہیں</li>
+                  <li>میں ان شرائط سے قانونی طور پر پابند ہونے پر راضی ہوں</li>
+                  <li>میری درخواست میں فراہم کردہ تمام معلومات سچی اور درست ہیں</li>
+                  <li>میں اوپر بیان کردہ اپنی ادائیگی کی ذمہ داری پوری کروں گا/گی</li>
+                </ul>
                 
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-6 rounded">
-                  <p className="text-sm text-red-900">
+                  <p className="text-sm text-red-900 mb-2">
                     <strong>⚠️ Important:</strong> This is a legally binding agreement. Non-payment may result in legal action. 
                     For questions, contact: <a href="mailto:agnjobbank123@gmail.com" className="text-orange hover:underline">agnjobbank123@gmail.com</a>
+                  </p>
+                  <p className="text-sm text-red-900" dir="rtl">
+                    <strong>⚠️ اہم:</strong> یہ ایک قانونی طور پر پابند کرنے والا معاہدہ ہے۔ عدم ادائیگی کے نتیجے میں قانونی کارروائی ہو سکتی ہے۔
+                    سوالات کے لیے رابطہ کریں: <a href="mailto:agnjobbank123@gmail.com" className="text-orange hover:underline">agnjobbank123@gmail.com</a>
                   </p>
                 </div>
               </div>
@@ -834,7 +878,7 @@ export default function ApplyPage() {
                 <h3 className="text-xl font-bold text-dark">Our Mission</h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                We connect talented finance professionals with leading organizations across the UK. With over 15 years
+                We connect talented finance professionals with leading organizations across Pakistan. With over 20 years
                 of experience in recruitment, we understand what both employers and candidates need to succeed.
               </p>
             </div>

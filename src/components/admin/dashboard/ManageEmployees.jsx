@@ -315,18 +315,18 @@ export default function ManageEmployees() {
   }
 
   const columns = [
-    { key: "name", label: "Name" },
-    { key: "age", label: "Age" },
-    { key: "mobile_no", label: "Mobile No" },
-    { key: "location", label: "Location" },
-    { key: "nearest_route", label: "Nearest Route" },
-    { key: "educational_profile", label: "Educational Profile" },
-    { key: "recent_completed_education", label: "Recent Education" },
-    { key: "field", label: "Field" },
-    { key: "experience", label: "Experience" },
-    { key: "cv", label: "CV" },
-    { key: "masked_cv", label: "Masked CV" },
-    { key: "agreement_pdf_url", label: "Agreement" },
+    { key: "name", label: "Employee Name", width: "auto", maxWidth: "200px" },
+    { key: "age", label: "Age", width: "auto", maxWidth: "100px" },
+    { key: "mobile_no", label: "Mobile Number", width: "auto", maxWidth: "150px" },
+    { key: "location", label: "Location", width: "auto", maxWidth: "150px" },
+    { key: "nearest_route", label: "Nearest Route", width: "auto", maxWidth: "150px" },
+    { key: "educational_profile", label: "Education Profile", width: "auto", maxWidth: "200px" },
+    { key: "recent_completed_education", label: "Recent Education", width: "auto", maxWidth: "200px" },
+    { key: "field", label: "Field of Expertise", width: "auto", maxWidth: "180px" },
+    { key: "experience", label: "Experience", width: "auto", maxWidth: "150px" },
+    { key: "cv", label: "CV Link", width: "auto", maxWidth: "120px" },
+    { key: "masked_cv", label: "Masked CV Link", width: "auto", maxWidth: "150px" },
+    { key: "agreement_pdf_url", label: "Agreement PDF", width: "auto", maxWidth: "150px" },
   ]
 
   return (
@@ -364,8 +364,8 @@ export default function ManageEmployees() {
       {/* Results Table */}
       <div className="w-full">
         <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3 md:py-4 lg:py-5 xl:py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
-            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white">Employees ({filteredResults.length})</h3>
+          <div className="bg-slate-900 text-white px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3 md:py-4 lg:py-5 xl:py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black">Employees ({filteredResults.length})</h3>
             <button
               onClick={exportToCSV}
               className="bg-orange text-dark px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-xl font-black hover:opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-md hover:shadow-lg text-xs sm:text-sm md:text-base w-full sm:w-auto justify-center"
@@ -387,251 +387,93 @@ export default function ManageEmployees() {
               </p>
             </div>
           ) : (
-            <>
-              {/* Mobile Card View */}
-              <div className="block lg:hidden">
-                <div className="p-2 sm:p-3 space-y-2 sm:space-y-3">
-                  {filteredResults.map((row, i) => (
-                    <div
-                      key={row.employee_id || i}
-                      className="bg-white border-2 border-slate-200 rounded-xl p-3 shadow-md hover:shadow-lg transition-all duration-300"
-                    >
-                      {/* Header with Name */}
-                      <div className="flex items-start justify-between mb-2 pb-2 border-b border-slate-200">
-                        <div className="flex-1">
-                          <h4 className="text-sm font-black text-slate-900">{row.name || "-"}</h4>
-                          <p className="text-xs text-slate-500 mt-0.5">ID: {row.employee_id}</p>
-                        </div>
-                      </div>
-
-                      {/* Key Info Grid */}
-                      <div className="space-y-2 mb-3">
-                        <div className="flex items-start gap-2">
-                          <span className="text-xs font-bold text-slate-600 min-w-[60px]">Location:</span>
-                          <span className="text-xs text-slate-800">{row.location || "-"}</span>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-xs font-bold text-slate-600 min-w-[60px]">Field:</span>
-                          <span className="text-xs text-slate-800">{row.field || "-"}</span>
-                        </div>
-                      </div>
-
-                      {/* Expandable Details */}
-                      <details className="mb-3">
-                        <summary className="text-xs font-bold text-orange cursor-pointer hover:text-orange select-none">
-                          View More Details
-                        </summary>
-                        <div className="mt-2 pt-2 border-t border-slate-200 space-y-1.5">
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Age:</span>
-                            <span className="text-xs text-slate-800">{row.age || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Email:</span>
-                            <span className="text-xs text-slate-800 break-all">{row.email || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Mobile:</span>
-                            <span className="text-xs text-slate-800">{row.mobile_no || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Route:</span>
-                            <span className="text-xs text-slate-800">{row.nearest_route || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">CNIC:</span>
-                            <span className="text-xs text-slate-800">{row.cnic_no || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Education:</span>
-                            <span className="text-xs text-slate-800">{row.recent_completed_education || "-"}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="text-xs font-bold text-slate-600 min-w-[100px]">Experience:</span>
-                            <span className="text-xs text-slate-800">{row.experience || "-"}</span>
-                          </div>
-                          {row.cv && (
-                            <div className="flex gap-2">
-                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Original CV:</span>
-                              <button
-                                onClick={() => handleCVView(row.cv, row.employee_id, 'original')}
-                                className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold flex items-center gap-1.5"
-                              >
-                                <span 
-                                  className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                    isCVViewed(row.employee_id, 'original') ? 'bg-emerald-500' : 'bg-red-500'
-                                  }`}
-                                  title={isCVViewed(row.employee_id, 'original') ? 'Viewed' : 'Not viewed'}
-                                />
-                                View
-                              </button>
-                            </div>
-                          )}
-                          {row.masked_cv && (
-                            <div className="flex gap-2">
-                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Masked CV:</span>
-                              <button
-                                onClick={() => handleCVView(row.masked_cv, row.employee_id, 'masked')}
-                                className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold flex items-center gap-1.5"
-                              >
-                                <span 
-                                  className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                    isCVViewed(row.employee_id, 'masked') ? 'bg-emerald-500' : 'bg-red-500'
-                                  }`}
-                                  title={isCVViewed(row.employee_id, 'masked') ? 'Viewed' : 'Not viewed'}
-                                />
-                                View
-                              </button>
-                            </div>
-                          )}
-                          {row.agreement_pdf_url && (
-                            <div className="flex gap-2">
-                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Agreement:</span>
-                              <button
-                                onClick={() => window.open(row.agreement_pdf_url, '_blank')}
-                                className="text-xs text-green-600 hover:text-green-800 underline font-semibold flex items-center gap-1.5"
-                              >
-                                <FileCheck size={12} />
-                                View PDF
-                              </button>
-                            </div>
-                          )}
-                          {row.agreement_accepted && (
-                            <div className="flex gap-2">
-                              <span className="text-xs font-bold text-slate-600 min-w-[100px]">Accepted:</span>
-                              <span className="text-xs text-green-600 font-semibold">✓ {new Date(row.agreement_timestamp).toLocaleString()}</span>
-                            </div>
-                          )}
-                        </div>
-                      </details>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => updateCvForEmployee(row.employee_id)}
-                          className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-md"
-                        >
-                          <Upload size={14} /> Update
-                        </button>
-                        <button
-                          onClick={() => handleCVDownload(row)}
-                          className="flex-1 bg-purple-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-md"
-                          disabled={!row.masked_cv && !row.cv}
-                        >
-                          <Download size={14} /> Download
-                        </button>
-                        <button
-                          onClick={() => handleWhatsAppShare(row)}
-                          className="flex-1 bg-emerald-500 text-white px-3 py-2 rounded-lg font-semibold hover:bg-emerald-600 transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-md"
-                        >
-                          <span className="text-sm">📲</span> Share
-                        </button>
-                        <button
-                          onClick={() => handleDeleteEmployee(row.employee_id, row.name)}
-                          className="flex-1 bg-red-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center gap-1.5 text-xs shadow-md"
-                        >
-                          <Trash2 size={14} /> Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Desktop Table View */}
-              <div className="hidden lg:block overflow-x-auto" style={{ width: "100%", maxWidth: "100%" }}>
-                <table className="text-left text-sm" style={{ width: "max-content", minWidth: "100%" }}>
-                  <thead className="bg-orange border-b-2 border-orange">
-                    <tr>
-                      {columns.map((col) => (
-                        <th key={col.key} className="px-6 py-4 font-black text-black whitespace-nowrap">
-                          {col.label}
-                        </th>
-                      ))}
-                      <th className="px-6 py-4 font-black text-black whitespace-nowrap">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredResults.map((row, i) => (
-                      <tr
-                        key={row.employee_id || i}
-                        className={`border-b-2 transition-all duration-300 hover:bg-light border-b-slate-200 ${
-                          i % 2 === 0 ? "bg-white" : "bg-slate-50"
-                        }`}
-                      >
-                        {columns.map((col) => (
-                          <td key={col.key} className="px-6 py-4 text-slate-700 font-medium whitespace-nowrap">
-                            {col.key === "cv" || col.key === "masked_cv" ? (
-                              row[col.key] ? (
-                                <button
-                                  onClick={() => handleCVView(row[col.key], row.employee_id, col.key === 'cv' ? 'original' : 'masked')}
-                                  className="text-blue-600 hover:text-blue-800 underline font-semibold flex items-center gap-2"
-                                >
-                                  <span 
-                                    className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                                      isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'bg-emerald-500' : 'bg-red-500'
-                                    }`}
-                                    title={isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'Viewed' : 'Not viewed'}
-                                  />
-                                  View
-                                </button>
-                              ) : (
-                                <span className="text-slate-400">-</span>
-                              )
-                            ) : col.key === "agreement_pdf_url" ? (
-                              row[col.key] ? (
-                                <button
-                                  onClick={() => window.open(row[col.key], '_blank')}
-                                  className="text-green-600 hover:text-green-800 underline font-semibold flex items-center gap-2"
-                                >
-                                  <FileCheck size={16} />
-                                  View
-                                </button>
-                              ) : row.agreement_accepted ? (
-                                <span className="text-amber-600 text-xs">Pending</span>
-                              ) : (
-                                <span className="text-slate-400">-</span>
-                              )
-                            ) : (
-                              String(row[col.key] ?? "-")
-                            )}
-                          </td>
-                        ))}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => updateCvForEmployee(row.employee_id)}
-                              className="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
-                            >
-                              <Upload size={14} /> Update
-                            </button>
-                            <button
-                              onClick={() => handleCVDownload(row)}
-                              className="bg-purple-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
-                              disabled={!row.masked_cv && !row.cv}
-                            >
-                              <Download size={14} /> Download
-                            </button>
-                            <button
-                              onClick={() => handleWhatsAppShare(row)}
-                              className="bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-emerald-600 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
-                            >
-                              <span className="text-sm">📲</span> Share
-                            </button>
-                            <button
-                              onClick={() => handleDeleteEmployee(row.employee_id, row.name)}
-                              className="bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-red-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
-                            >
-                              <Trash2 size={14} /> Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+            <div className="h-600 overflow-y-auto" style={{ maxHeight: '600px' }}>
+              <table className="w-full min-w-full divide-y divide-gray-200 text-left text-sm">
+                <thead className="bg-orange border-b-2 border-orange sticky top-0 z-10">
+                  <tr>
+                    {columns.map((col) => (
+                      <th key={col.key} className="px-6 py-3 text-xs font-medium tracking-wider uppercase text-black">
+                        {col.label}
+                      </th>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
+                    <th className="px-6 py-3 text-xs font-medium tracking-wider uppercase text-black">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredResults.map((row, i) => (
+                    <tr key={row.employee_id || i} className="hover:bg-gray-50">
+                      {columns.map((col) => (
+                        <td key={col.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate" style={{ maxWidth: col.maxWidth }}>
+                          {col.key === "cv" || col.key === "masked_cv" ? (
+                            row[col.key] ? (
+                              <button
+                                onClick={() => handleCVView(row[col.key], row.employee_id, col.key === 'cv' ? 'original' : 'masked')}
+                                className="text-blue-600 hover:text-blue-800 underline font-semibold flex items-center gap-2"
+                              >
+                                <span 
+                                  className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                                    isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'bg-emerald-500' : 'bg-red-500'
+                                  }`}
+                                  title={isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'Viewed' : 'Not viewed'}
+                                />
+                                View
+                              </button>
+                            ) : (
+                              <span className="text-slate-400">-</span>
+                            )
+                          ) : col.key === "agreement_pdf_url" ? (
+                            row[col.key] ? (
+                              <button
+                                onClick={() => window.open(row[col.key], '_blank')}
+                                className="text-green-600 hover:text-green-800 underline font-semibold flex items-center gap-2"
+                              >
+                                <FileCheck size={16} />
+                                View
+                              </button>
+                            ) : row.agreement_accepted ? (
+                              <span className="text-amber-600 text-xs">Pending</span>
+                            ) : (
+                              <span className="text-slate-400">-</span>
+                            )
+                          ) : (
+                            String(row[col.key] ?? "-")
+                          )}
+                        </td>
+                      ))}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => updateCvForEmployee(row.employee_id)}
+                            className="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
+                          >
+                            <Upload size={14} /> Update
+                          </button>
+                          <button
+                            onClick={() => handleCVDownload(row)}
+                            className="bg-purple-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
+                            disabled={!row.masked_cv && !row.cv}
+                          >
+                            <Download size={14} /> Download
+                          </button>
+                          <button
+                            onClick={() => handleWhatsAppShare(row)}
+                            className="bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-emerald-600 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
+                          >
+                            <span className="text-sm">📲</span> Share
+                          </button>
+                          <button
+                            onClick={() => handleDeleteEmployee(row.employee_id, row.name)}
+                            className="bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-red-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
+                          >
+                            <Trash2 size={14} /> Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
@@ -652,4 +494,4 @@ export default function ManageEmployees() {
     </div>
   )
 }
-
+ 
