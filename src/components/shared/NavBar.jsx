@@ -1,11 +1,16 @@
 "use client"
 
-import { Menu, X, FilePlus, UserPlus, LogIn, HomeIcon, Mail, Info } from "lucide-react"
+import { Menu, X, FilePlus, UserPlus, LogIn, HomeIcon, Mail, Info, MessageCircle } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const location = useLocation()
+  
+  // Check if current page is an admin page
+  const isAdminPage = location.pathname.includes('/admin') || location.pathname.includes('/employer-dashboard')
 
   // Check if user is logged in (admin or employer)
   useEffect(() => {
@@ -125,6 +130,17 @@ export default function NavBar() {
           >
             <Mail size={16} /> CONTACT
           </a>
+          {!isAdminPage && (
+            <a
+              href="https://wa.me/923037774400"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-500 text-white font-bold px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 shadow-md hover:shadow-lg"
+              title="Chat with us on WhatsApp"
+            >
+              <MessageCircle size={16} /> WhatsApp
+            </a>
+          )}
         </div>
         <button
           className="md:hidden text-gray-800 p-2 hover:bg-light rounded-lg transition duration-300"
@@ -179,6 +195,17 @@ export default function NavBar() {
             >
               <Mail size={16} /> CONTACT
             </a>
+            {!isAdminPage && (
+              <a
+                href="https://wa.me/923037774400"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-green-500 text-white font-bold px-4 py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md justify-center"
+                title="Chat with us on WhatsApp"
+              >
+                <MessageCircle size={18} /> Chat on WhatsApp
+              </a>
+            )}
           </div>
         </div>
       )}
