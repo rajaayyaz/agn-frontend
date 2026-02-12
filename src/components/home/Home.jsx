@@ -681,7 +681,7 @@ export default function Home() {
               onClick={openApply}
               className="btn-primary bg-dark text-orange font-black text-lg px-6 py-4 sm:px-8 sm:py-6 rounded-lg shadow-md relative z-10 inline-flex items-center gap-2"
             >
-              Apply Now <ArrowRight size={20} />
+              Apply Now???<ArrowRight size={20} />
             </button>
             <button className="btn-primary border-2 border-dark text-dark hover:bg-dark hover:text-orange font-black text-lg px-6 py-4 sm:px-8 sm:py-6 rounded-lg bg-transparent relative z-10 inline-flex items-center gap-2">
               Hire Talent <ArrowRight size={20} />
