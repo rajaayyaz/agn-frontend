@@ -8,7 +8,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   margin: 0 !important;
   padding: 0 !important;
   height: 100%;
@@ -20,21 +22,27 @@ body {
   margin: 0;
   padding: 0;
 }
+
 .container {
   padding: 20px;
 }
+
 form {
   display: flex;
   flex-direction: column;
   max-width: 500px;
 }
+
 form label {
   margin-top: 10px;
 }
-form input, form textarea {
+
+form input,
+form textarea {
   padding: 5px;
   font-size: 16px;
 }
+
 form button {
   margin-top: 20px;
   padding: 10px;
@@ -44,17 +52,22 @@ form button {
   border: none;
   cursor: pointer;
 }
+
 form button:hover {
   background-color: #555;
 }
 
 /* Mobile / responsive improvements */
-html, body {
-  -webkit-text-size-adjust: 100%; /* prevent iOS font autosizing */
+html,
+body {
+  -webkit-text-size-adjust: 100%;
+  /* prevent iOS font autosizing */
 }
 
 /* Make images and media scale within their containers */
-img, picture, video {
+img,
+picture,
+video {
   max-width: 100%;
   height: auto;
   display: block;
@@ -64,22 +77,37 @@ img, picture, video {
 * {
   box-sizing: border-box;
 }
+
 body {
   overflow-x: hidden;
 }
 
 /* Fluid typography for small screens */
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   line-height: 1.05;
 }
 
 @media (max-width: 640px) {
-  h1 { font-size: 1.6rem; }
-  h2 { font-size: 1.25rem; }
-  h3 { font-size: 1.05rem; }
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+  }
 
   /* Larger touch targets */
-  button, a[class], .card-btn {
+  button,
+  a[class],
+  .card-btn {
     min-height: 44px;
     padding-left: 14px;
     padding-right: 14px;
@@ -87,18 +115,33 @@ h1, h2, h3, h4, h5 {
   }
 
   /* Navigation spacing adjustments */
-  nav .max-w-7xl { padding-left: 12px; padding-right: 12px; }
+  nav .max-w-7xl {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
   /* Make forms use full width on mobile */
-  form { max-width: 100%; padding-left: 8px; padding-right: 8px; }
-  .w-12.h-12 { width: 44px; height: 44px; }
+  form {
+    max-width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .w-12.h-12 {
+    width: 44px;
+    height: 44px;
+  }
 
   /* Reduce heavy shadows on mobile for performance */
-  .shadow-xl, .shadow-2xl { box-shadow: none !important; }
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: none !important;
+  }
 }
 
-/* Make sure fixed nav doesn't cover content on smaller screens */
-.fixed { position: sticky; top: 0; z-index: 60; }
+/* NOTE: Removed dangerous global `.fixed { position: sticky }` override.
+   It was breaking ALL fixed-positioned elements (modals, toasts, overlays).
+   The nav is already handled by the component's own sticky/fixed classes. */
 
 /* Small utility to vertically center hero text on mobile */
 @media (max-width: 480px) {
@@ -109,12 +152,13 @@ h1, h2, h3, h4, h5 {
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 70;
   display: none;
   align-items: center;
   justify-content: center;
 }
+
 .mobile-nav-overlay .menu {
   background: white;
   width: 90%;
@@ -122,129 +166,340 @@ h1, h2, h3, h4, h5 {
   border-radius: 12px;
   padding: 20px;
 }
-.mobile-nav-open .mobile-nav-overlay { display: flex; }
+
+.mobile-nav-open .mobile-nav-overlay {
+  display: flex;
+}
 
 /* Responsive container widths */
 @media (min-width: 640px) {
-  .container { max-width: 640px; margin: 0 auto; }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
 }
+
 @media (min-width: 768px) {
-  .container { max-width: 768px; }
+  .container {
+    max-width: 768px;
+  }
 }
+
 @media (min-width: 1024px) {
-  .container { max-width: 1024px; }
+  .container {
+    max-width: 1024px;
+  }
 }
 
 /* Utility to ensure large buttons wrap nicely on narrow screens */
-.btn-wrap { white-space: normal; }
+.btn-wrap {
+  white-space: normal;
+}
 
 /* --------- Centralized animation utilities (restore site animations) --------- */
 /* Basic helpers: elements using these classes often set inline animationDelay styles */
-.animate-in { animation-fill-mode: both; }
+.animate-in {
+  animation-fill-mode: both;
+}
 
 /* Fade / zoom */
-.fade-in, .animate-fade-in, .animate-fadeIn { animation: fadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-fade-in-delay { animation: fadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-fade-in-delay-2 { animation: fadeIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-fade-in-up { animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-in,
+.animate-fade-in,
+.animate-fadeIn {
+  animation: fadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
-.zoom-in, .animate-zoom-in { animation: zoomIn 0.33s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.zoom-in-95 { animation: zoomIn95 0.33s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.animate-fade-in-delay {
+  animation: fadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fadeIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.zoom-in,
+.animate-zoom-in {
+  animation: zoomIn 0.33s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.zoom-in-95 {
+  animation: zoomIn95 0.33s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
 
 /* Slide variants */
-.slide-in-from-left-8 { animation: slideInLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.slide-in-from-right-8 { animation: slideInRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.slide-in-from-top-2 { animation: slideInTop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-slide-up, .animate-slide-in-up, .animate-slide-up { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-slide-in-left { animation: slideInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-slide-in-right { animation: slideInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.slide-in-from-left-8 {
+  animation: slideInLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-in-from-right-8 {
+  animation: slideInRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInTop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-up,
+.animate-slide-in-up,
+.animate-slide-up {
+  animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-in-from-bottom-5 {
+  animation: slideInBottom 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-in-from-bottom-10 {
+  animation: slideInBottomLarge 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Scale / float */
-.animate-float, .animate-pulse, .soft-pulse { animation: floatSlow 4s ease-in-out infinite; }
-.icon-bounce { animation: iconBounce 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; }
-.card-animate { /* fallback if not defined inside component */ animation: cardSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-float,
+.animate-pulse,
+.soft-pulse {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.icon-bounce {
+  animation: iconBounce 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.card-animate {
+  /* fallback if not defined inside component */
+  animation: cardSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Stagger helpers (small incremental delays for grouped items) */
-.stagger-1 { animation-delay: 0.06s; }
-.stagger-2 { animation-delay: 0.12s; }
-.stagger-3 { animation-delay: 0.18s; }
-.stagger-4 { animation-delay: 0.24s; }
-.stagger-item { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.stagger-1 {
+  animation-delay: 0.06s;
+}
+
+.stagger-2 {
+  animation-delay: 0.12s;
+}
+
+.stagger-3 {
+  animation-delay: 0.18s;
+}
+
+.stagger-4 {
+  animation-delay: 0.24s;
+}
+
+.stagger-item {
+  animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* H2 entrance helpers used by intersection observer in Home.jsx */
-.h2-animate { animation: h2Grow 0.55s cubic-bezier(0.22,1,0.36,1) both; }
-.h2-animate-slow { animation: h2Grow 0.95s cubic-bezier(0.22,1,0.36,1) both; }
+.h2-animate {
+  animation: h2Grow 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.h2-animate-slow {
+  animation: h2Grow 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Small scale-in used in some feature cards */
-.animate-scale-in { animation: scaleIn 0.45s cubic-bezier(0.2,0.8,0.2,1) both; }
+.animate-scale-in {
+  animation: scaleIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
 
 /* Generic small utility for zoom-in used by modal/content */
-.zoom-in-95 { transform-origin: center; }
+.zoom-in-95 {
+  transform-origin: center;
+}
 
 /* ---------- Keyframes ---------- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes zoomIn95 {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-32px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(32px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInTop {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes floatSlow {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-10px) scale(1.01); }
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-10px) scale(1.01);
+  }
 }
 
 @keyframes iconBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 @keyframes cardSlideUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes h2Grow {
-  from { transform: scaleX(0); opacity: 0; }
-  to { transform: scaleX(1); opacity: 1; }
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.98) translateY(6px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInBottomLarge {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Keep the existing Tailwind animate-* names intact (spin/bounce/pulse) - we only add helpers above */
@@ -258,9 +513,28 @@ svg {
 }
 
 /* Small uniform icon sizing helper (can be added via className when needed) */
-.icon-pro { width: 1.5rem; height: 1.5rem; display: inline-block; vertical-align: middle; }
-.icon-pro svg { width: 1.5rem; height: 1.5rem; }
+.icon-pro {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-pro svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 /* Button loading and disabled helpers */
-.btn-loading { opacity: 0.65; cursor: not-allowed; }
-.btn-spinner { width: 1rem; height: 1rem; border-radius: 9999px; border: 2px solid rgba(255,255,255,0.18); border-top-color: rgba(255,255,255,0.95); }
+.btn-loading {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(255, 255, 255, 0.95);
+}

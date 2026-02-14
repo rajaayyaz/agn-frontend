@@ -1,13 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Search, Upload, Trash2, Download, FileCheck } from "lucide-react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { Search, Upload, Trash2, Download, FileCheck, MessageCircle } from "lucide-react"
+import Modal from "../../common/Modal"
 import { deleteEmployee } from "../../../Api/Service/apiService"
 import CONFIG from "../../../Api/Config/config"
 
 export default function ManageEmployees() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [allEmployees, setAllEmployees] = useState([])
+  const [employees, setEmployees] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
+  const scrollContainerRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [offset, setOffset] = useState(0)
+
   const [toasts, setToasts] = useState([])
   const [viewedCVs, setViewedCVs] = useState({})
 
@@ -62,15 +70,15 @@ export default function ManageEmployees() {
       showToast("error", "No CV available to download")
       return
     }
-    
+
     try {
       // Create proper filename
       const cleanName = (emp.name || 'Employee').replace(/[^a-zA-Z0-9]/g, '_')
       const extension = url.toLowerCase().includes('.docx') ? '.docx' : '.pdf'
       const filename = `${cleanName}_CV${extension}`
-      
+
       showToast("info", "Downloading CV...")
-      
+
       // Fetch and download with proper name
       const response = await fetch(url)
       const blob = await response.blob()
@@ -82,7 +90,7 @@ export default function ManageEmployees() {
       link.click()
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
-      
+
       showToast("success", `Downloaded: ${filename}`)
     } catch (err) {
       showToast("error", "Download failed. Please try again.")
@@ -90,66 +98,106 @@ export default function ManageEmployees() {
     }
   }
 
+  // Initial fetch
   useEffect(() => {
-    fetchEmployeesFromApi()
+    // Fetch first page (offset 0)
+    fetchEmployees(0, "", false)
   }, [])
 
-  const filteredResults = allEmployees.filter((emp) => {
-    if (!searchQuery.trim()) return true
+  const PAGE_SIZE = 50
+  const isFetchingRef = useRef(false)
 
-    const searchTerms = searchQuery.toLowerCase().trim().split(/\s+/)
+  const fetchEmployees = useCallback(async (currentOffset, search, append = false) => {
+    // Prevent concurrent fetches
+    if (isFetchingRef.current) return
+    isFetchingRef.current = true
 
-    const name = (emp.name || "").toLowerCase()
-    const mobile = (emp.mobile_no || "").toLowerCase()
-    const route = (emp.nearest_route || "").toLowerCase()
-    const field = (emp.field || "").toLowerCase()
-    const location = (emp.location || "").toLowerCase()
-
-    const allFields = `${name} ${mobile} ${route} ${field} ${location}`
-
-    return searchTerms.every((term) => allFields.includes(term))
-  })
-
-  function onSearch(e) {
-    e && e.preventDefault()
-    if (allEmployees.length === 0) {
-      showToast("info", "Loading employees...")
-    } else if (filteredResults.length === 0) {
-      showToast("info", `No employees found matching "${searchQuery}"`)
+    if (append) {
+      setIsLoadingMore(true)
     } else {
-      showToast("success", `Found ${filteredResults.length} employee(s)`)
+      setIsLoading(true)
     }
-  }
 
-  async function fetchEmployeesFromApi() {
     try {
-      const params = new URLSearchParams({ limit: 200 })
-      const url = `${CONFIG.BASE_URL}/api/employees?${params.toString()}`
+      const params = new URLSearchParams({
+        limit: PAGE_SIZE.toString(),
+        offset: currentOffset.toString(),
+        search: search
+      })
+
+      const fetchUrl = `${CONFIG.BASE_URL}/api/employees?${params.toString()}`
 
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 60000)
 
-      const r = await fetch(url, {
-        signal: controller.signal,
-      })
+      const r = await fetch(fetchUrl, { signal: controller.signal })
       clearTimeout(timeoutId)
 
       const j = await r.json()
       if (j.ok) {
-        // Sort by employee_id descending to show newest first
-        const sortedRows = (j.rows || []).sort((a, b) => (b.employee_id || 0) - (a.employee_id || 0))
-        setAllEmployees(sortedRows)
+        const rows = j.rows || []
+
+        // Update total count from API
+        if (j.total !== undefined) {
+          setTotalCount(j.total)
+        } else if (!append) {
+          // Fallback if API doesn't return total yet
+          setTotalCount(rows.length)
+        }
+
+        if (append) {
+          setEmployees(prev => {
+            const existingIds = new Set(prev.map(e => e.employee_id))
+            const newRows = rows.filter(row => !existingIds.has(row.employee_id))
+            return [...prev, ...newRows]
+          })
+        } else {
+          setEmployees(rows)
+        }
+
+        setHasMore(rows.length >= PAGE_SIZE)
+        setOffset(currentOffset + rows.length)
       } else {
         showToast("error", `API error: ${j.error}`)
       }
     } catch (err) {
-      if (err.name === "AbortError") {
-        showToast("error", "Request timed out. The server is taking too long to respond.")
-      } else {
+      if (err.name !== "AbortError") {
         showToast("error", `Fetch error: ${err.message}`)
       }
+    } finally {
+      setIsLoading(false)
+      setIsLoadingMore(false)
+      isFetchingRef.current = false
     }
+  }, [searchQuery])
+
+  function onSearch(e) {
+    if (e) e.preventDefault()
+    // Reset and fetch
+    setOffset(0)
+    setHasMore(true)
+    fetchEmployees(0, searchQuery, false)
   }
+
+  // Infinite Scroll Handler
+  useEffect(() => {
+    if (!hasMore || isLoading || isLoadingMore) return
+
+    const scrollContainer = scrollContainerRef.current
+    if (!scrollContainer) return
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainer
+      if (scrollTop + clientHeight >= scrollHeight - 300) {
+        if (hasMore && !isFetchingRef.current) {
+          fetchEmployees(offset, searchQuery, true)
+        }
+      }
+    }
+
+    scrollContainer.addEventListener('scroll', handleScroll)
+    return () => scrollContainer.removeEventListener('scroll', handleScroll)
+  }, [hasMore, isLoading, isLoadingMore, offset, searchQuery, fetchEmployees])
 
   function updateCvForEmployee(empId) {
     const input = document.createElement("input")
@@ -169,7 +217,7 @@ export default function ManageEmployees() {
         const j = await r.json()
         if (j.ok) {
           showToast("success", `Updated CV for ${empId}`)
-          setAllEmployees((prev) =>
+          setEmployees((prev) =>
             prev.map((row) => (row.employee_id === empId ? { ...row, cv: j.cv_url, masked_cv: j.masked_cv_url } : row)),
           )
         } else {
@@ -236,6 +284,7 @@ export default function ManageEmployees() {
   }
 
   async function handleDeleteEmployee(empId, empName) {
+    // Custom confirmation logic or standard confirm
     if (!confirm(`Are you sure you want to delete employee "${empName}"? This action cannot be undone.`)) {
       return
     }
@@ -246,7 +295,7 @@ export default function ManageEmployees() {
 
       if (response && response.ok) {
         showToast("success", `Employee ${empName} deleted successfully`)
-        setAllEmployees((prev) => prev.filter((emp) => emp.employee_id !== empId))
+        setEmployees((prev) => prev.filter((emp) => emp.employee_id !== empId))
       } else {
         showToast("error", `Failed to delete: ${response?.error || "Unknown error"}`)
       }
@@ -255,11 +304,27 @@ export default function ManageEmployees() {
     }
   }
 
-  function exportToCSV() {
+  async function exportToCSV() {
     try {
-      // Use filteredResults to export either all data or filtered data
-      const dataToExport = filteredResults
-      
+      showToast("info", "Preparing export... fetching all records.")
+
+      // Fetch ALL records for the export, matching current search
+      // We use a high limit to get everything.
+      const params = new URLSearchParams({
+        limit: "100000",
+        offset: "0",
+        search: searchQuery
+      })
+      const exportUrl = `${CONFIG.BASE_URL}/api/employees?${params.toString()}`
+      const r = await fetch(exportUrl)
+      const j = await r.json()
+
+      if (!j.ok) {
+        throw new Error(j.error || "Failed to fetch data")
+      }
+
+      const dataToExport = j.rows || []
+
       if (dataToExport.length === 0) {
         showToast("error", "No data to export")
         return
@@ -267,13 +332,13 @@ export default function ManageEmployees() {
 
       // Define CSV headers based on columns
       const headers = columns.map(col => col.label)
-      
+
       // Convert data to CSV format
       const csvRows = []
-      
+
       // Add header row
       csvRows.push(headers.join(','))
-      
+
       // Add data rows
       dataToExport.forEach(row => {
         const values = columns.map(col => {
@@ -287,27 +352,28 @@ export default function ManageEmployees() {
         })
         csvRows.push(values.join(','))
       })
-      
+
       // Create CSV string
       const csvString = csvRows.join('\n')
-      
+
       // Create blob and download
       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
       const link = document.createElement('a')
-      const url = URL.createObjectURL(blob)
-      
+      const blobUrl = URL.createObjectURL(blob)
+
       // Generate filename with timestamp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
       const filterStatus = searchQuery.trim() ? 'filtered' : 'all'
       const filename = `employees_${filterStatus}_${timestamp}.csv`
-      
-      link.setAttribute('href', url)
+
+      link.setAttribute('href', blobUrl)
       link.setAttribute('download', filename)
       link.style.visibility = 'hidden'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      
+      URL.revokeObjectURL(blobUrl)
+
       showToast("success", `Exported ${dataToExport.length} employee(s) to ${filename}`)
     } catch (err) {
       showToast("error", `Export error: ${err.message}`)
@@ -327,10 +393,77 @@ export default function ManageEmployees() {
     { key: "cv", label: "CV Link", width: "auto", maxWidth: "120px" },
     { key: "masked_cv", label: "Masked CV Link", width: "auto", maxWidth: "150px" },
     { key: "agreement_pdf_url", label: "Agreement PDF", width: "auto", maxWidth: "150px" },
+    { key: "status", label: "Status", width: "auto", maxWidth: "120px" },
   ]
+
+  const [confirmDialog, setConfirmDialog] = useState(null) // { empId, empName }
+
+  async function handleMarkAppointed() {
+    if (!confirmDialog) return
+    const { empId, empName } = confirmDialog
+
+    try {
+      const token = localStorage.getItem('agn_auth_token')
+      if (!token) {
+        showToast("error", "Session expired. Please re-login as admin.")
+        setConfirmDialog(null)
+        return
+      }
+      showToast("info", `Updating status for ${empName}...`)
+      const response = await fetch(`${CONFIG.BASE_URL}/api/employees/${empId}/appoint`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 401) {
+        showToast("error", "Session expired. Please re-login as admin.")
+        setConfirmDialog(null)
+        return
+      }
+
+      const j = await response.json()
+
+      if (j.ok) {
+        showToast("success", `${empName} marked as Appointed!`)
+        setEmployees(prev => prev.map(emp =>
+          emp.employee_id === empId ? { ...emp, status: 'appointed' } : emp
+        ))
+      } else {
+        showToast("error", `Failed: ${j.error}`)
+      }
+    } catch (err) {
+      showToast("error", `Error: ${err.message}`)
+    } finally {
+      setConfirmDialog(null)
+    }
+  }
+
+  async function markAsAppointed(empId, empName) {
+    setConfirmDialog({ empId, empName })
+  }
+
+  function handleWhatsAppChat(emp) {
+    const phone = emp?.mobile_no
+    if (!phone) {
+      showToast("error", `No phone number for ${emp?.name || 'this employee'}`)
+      return
+    }
+    // Clean: remove spaces, dashes, parens, + sign
+    let cleaned = phone.replace(/[\s\-\(\)\+]/g, '')
+    // Ensure country code (Pakistan: if starts with 0, replace with 92)
+    if (cleaned.startsWith('0')) {
+      cleaned = '92' + cleaned.slice(1)
+    }
+    window.open(`https://wa.me/${cleaned}`, '_blank')
+  }
 
   return (
     <div>
+      {/* Confirmation Toast is rendered in the toast container below */}
+
       {/* Search Section */}
       <div className="mb-3 sm:mb-4 md:mb-6 lg:mb-8">
         <div className="bg-white rounded-2xl p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8 border-2 border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -365,7 +498,7 @@ export default function ManageEmployees() {
       <div className="w-full">
         <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-lg overflow-hidden">
           <div className="bg-slate-900 text-white px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3 md:py-4 lg:py-5 xl:py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
-            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black">Employees ({filteredResults.length})</h3>
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black">Employees ({totalCount})</h3>
             <button
               onClick={exportToCSV}
               className="bg-orange text-dark px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-xl font-black hover:opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-md hover:shadow-lg text-xs sm:text-sm md:text-base w-full sm:w-auto justify-center"
@@ -374,20 +507,18 @@ export default function ManageEmployees() {
             </button>
           </div>
 
-          {filteredResults.length === 0 ? (
+          {employees.length === 0 && !isLoading ? (
             <div className="p-12 text-center">
               <div className="text-6xl mb-4">📋</div>
               <p className="text-slate-600 font-semibold">
-                {allEmployees.length === 0 ? "Loading employees..." : "No employees found matching your search."}
+                No employees found matching your search.
               </p>
               <p className="text-slate-500 text-sm mt-2">
-                {allEmployees.length === 0
-                  ? "Please wait while we fetch employee data from the database."
-                  : "Try a different search term or clear the search to see all employees."}
+                Try a different search term or clear the search to see all employees.
               </p>
             </div>
           ) : (
-            <div className="h-600 overflow-y-auto" style={{ maxHeight: '600px' }}>
+            <div ref={scrollContainerRef} className="h-600 overflow-y-auto" style={{ maxHeight: '600px' }}>
               <table className="w-full min-w-full divide-y divide-gray-200 text-left text-sm">
                 <thead className="bg-orange border-b-2 border-orange sticky top-0 z-10">
                   <tr>
@@ -400,7 +531,7 @@ export default function ManageEmployees() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredResults.map((row, i) => (
+                  {employees.map((row, i) => (
                     <tr key={row.employee_id || i} className="hover:bg-gray-50">
                       {columns.map((col) => (
                         <td key={col.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate" style={{ maxWidth: col.maxWidth }}>
@@ -410,10 +541,9 @@ export default function ManageEmployees() {
                                 onClick={() => handleCVView(row[col.key], row.employee_id, col.key === 'cv' ? 'original' : 'masked')}
                                 className="text-blue-600 hover:text-blue-800 underline font-semibold flex items-center gap-2"
                               >
-                                <span 
-                                  className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                                    isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'bg-emerald-500' : 'bg-red-500'
-                                  }`}
+                                <span
+                                  className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'bg-emerald-500' : 'bg-red-500'
+                                    }`}
                                   title={isCVViewed(row.employee_id, col.key === 'cv' ? 'original' : 'masked') ? 'Viewed' : 'Not viewed'}
                                 />
                                 View
@@ -434,6 +564,20 @@ export default function ManageEmployees() {
                               <span className="text-amber-600 text-xs">Pending</span>
                             ) : (
                               <span className="text-slate-400">-</span>
+                            )
+                          ) : col.key === "status" ? (
+                            row.status === 'appointed' ? (
+                              <span className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-300 shadow-sm">
+                                ✓ Appointed
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => markAsAppointed(row.employee_id, row.name)}
+                                className="bg-orange/10 text-orange text-xs font-bold px-4 py-1.5 rounded-full border border-orange/40 hover:bg-orange hover:text-black transition-all duration-300 shadow-sm hover:shadow-lg whitespace-nowrap min-w-[120px]"
+                                title="Click to mark as appointed"
+                              >
+                                Mark Appointed
+                              </button>
                             )
                           ) : (
                             String(row[col.key] ?? "-")
@@ -462,6 +606,13 @@ export default function ManageEmployees() {
                             <span className="text-sm">📲</span> Share
                           </button>
                           <button
+                            onClick={() => handleWhatsAppChat(row)}
+                            className="bg-green-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg ring-1 ring-green-600/20"
+                            title={`Chat with ${row.name} on WhatsApp`}
+                          >
+                            <MessageCircle size={14} className="fill-current" /> Chat
+                          </button>
+                          <button
                             onClick={() => handleDeleteEmployee(row.employee_id, row.name)}
                             className="bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-red-700 transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex items-center gap-1.5 text-xs shadow-md hover:shadow-lg"
                           >
@@ -471,6 +622,15 @@ export default function ManageEmployees() {
                       </td>
                     </tr>
                   ))}
+                  {/* Loading indicator at bottom */}
+                  {isLoading || isLoadingMore ? (
+                    <tr>
+                      <td colSpan={columns.length + 1} className="text-center py-4">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange"></div>
+                        <span className="ml-2 text-slate-600">Loading more employees...</span>
+                      </td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </table>
             </div>
@@ -478,20 +638,53 @@ export default function ManageEmployees() {
         </div>
       </div>
 
-      {/* Toast container */}
-      <div aria-live="polite" className="fixed top-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-sm">
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={!!confirmDialog}
+        onClose={() => setConfirmDialog(null)}
+        title="Confirm Appointment"
+      >
+        <div className="flex flex-col items-center text-center">
+          <div className="p-4 bg-orange/10 rounded-full text-orange mb-4">
+            <FileCheck size={32} strokeWidth={2.5} />
+          </div>
+          <p className="text-gray-600 mb-8 text-base leading-relaxed">
+            Are you sure you want to mark <span className="font-bold text-gray-900">{confirmDialog?.empName}</span> as appointed?
+          </p>
+          <div className="flex gap-3 w-full">
+            <button
+              onClick={() => setConfirmDialog(null)}
+              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleMarkAppointed}
+              className="flex-1 px-4 py-2.5 rounded-xl bg-orange text-white font-bold hover:bg-orange/90 transition-colors shadow-lg shadow-orange/20"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Toast container - Top Right */}
+      <div aria-live="polite" className="fixed top-4 right-4 z-[60] flex flex-col gap-2 pointer-events-none max-w-sm w-full">
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`w-full px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white transform transition-all duration-300 pointer-events-auto ${
-              t.type === "success" ? "bg-emerald-600" : t.type === "info" ? "bg-blue-600" : "bg-red-600"
-            }`}
+            className={`w-full px-4 py-3 rounded-xl shadow-lg border text-sm font-bold flex items-center justify-between pointer-events-auto animate-in slide-in-from-bottom-5 fade-in ${t.type === "success"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : t.type === "info"
+                  ? "bg-blue-50 text-blue-800 border-blue-200"
+                  : "bg-red-50 text-red-800 border-red-200"
+              }`}
           >
-            {t.text}
+            <span>{t.text}</span>
+            <button onClick={() => setToasts(prev => prev.filter(x => x.id !== t.id))} className="ml-3 opacity-50 hover:opacity-100 p-1 flex-shrink-0">✕</button>
           </div>
         ))}
       </div>
     </div>
   )
 }
- 
