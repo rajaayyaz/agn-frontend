@@ -40,22 +40,6 @@ export default function AdminPanel() {
   const [loadingStats, setLoadingStats] = useState(true)
   const [loadingActivities, setLoadingActivities] = useState(true)
 
-  // Remove body margin/padding on mount
-  useEffect(() => {
-    document.body.style.margin = '0'
-    document.body.style.padding = '0'
-    document.documentElement.style.margin = '0'
-    document.documentElement.style.padding = '0'
-    
-    return () => {
-      // Cleanup if needed
-      document.body.style.margin = ''
-      document.body.style.padding = ''
-      document.documentElement.style.margin = ''
-      document.documentElement.style.padding = ''
-    }
-  }, [])
-
   const showToast = (type, text, duration = 4500) => {
     const id = Date.now() + Math.random()
     setToasts((t) => [...t, { id, type, text }])
@@ -67,6 +51,11 @@ export default function AdminPanel() {
     if (activeSection === "dashboard") {
       fetchDashboardData()
     }
+  }, [activeSection])
+
+  // Scroll to top when section changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [activeSection])
 
   // Handle window resize and close mobile menu on larger screens
@@ -183,7 +172,7 @@ export default function AdminPanel() {
   ]
 
   return (
-    <div className="fixed inset-0 bg-gray-50 overflow-auto">
+    <div className="min-h-screen bg-gray-50">
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
@@ -193,7 +182,7 @@ export default function AdminPanel() {
       )}
 
       {/* Main Content Area */}
-      <div className="h-full flex flex-col w-full">
+      <div className="flex flex-col w-full">
         {/* Top Navigation Bar */}
   <header className="bg-white shadow-md border-b-2 border-orange z-[70] w-full flex-shrink-0 fixed top-0 left-0 right-0">
           <div className="px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3">
@@ -250,12 +239,12 @@ export default function AdminPanel() {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto w-full pt-[65px] sm:pt-[75px] md:pt-[85px]">
-          <div className="px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-0">
+        <main className="w-full min-h-screen pt-[120px] sm:pt-[140px] md:pt-[150px] pb-12">
+          <div className="px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8">
           {activeSection === "dashboard" && (
-            <div>
+            <div className="py-4">
               {/* Dashboard Overview */}
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-3 md:gap-4 lg:gap-6 mb-3 sm:mb-6 lg:mb-8 mt-0">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-3 md:gap-4 lg:gap-6 mb-3 sm:mb-6 lg:mb-8">
                 {/* Stats Cards */}
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-5 lg:p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
                   <div className="flex items-center justify-between">

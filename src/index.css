@@ -13,14 +13,16 @@ body,
 #root {
   margin: 0 !important;
   padding: 0 !important;
-  height: 100%;
   width: 100%;
+  min-height: 100%;
 }
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .container {
@@ -76,10 +78,6 @@ video {
 /* Prevent horizontal scroll caused by long fixed-width elements */
 * {
   box-sizing: border-box;
-}
-
-body {
-  overflow-x: hidden;
 }
 
 /* Fluid typography for small screens */
