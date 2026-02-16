@@ -1,11 +1,11 @@
 {
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "env": {
-    "VITE_API_URL": "https://agn768-backend.hf.space"
+    "VITE_API_URL": "https://rajaayyaz-agn-backend.hf.space"
   },
   "build": {
     "env": {
-      "VITE_API_URL": "https://agn768-backend.hf.space"
+      "VITE_API_URL": "https://rajaayyaz-agn-backend.hf.space"
     }
   }
 }
